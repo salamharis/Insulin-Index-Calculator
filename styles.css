@@ -5,12 +5,8 @@ body {
 }
 
 .calculator {
-    width: 300px;
+    width: 80%;
     margin: 50px auto;
-    padding: 20px;
-    background-color: #f4f4f4;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .input-group {
@@ -23,15 +19,10 @@ body {
 }
 
 .input-group input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
+    margin-right: 10px;
 }
 
 button {
-    display: block;
-    width: 100%;
     padding: 10px;
     background-color: #007bff;
     color: #fff;
@@ -44,8 +35,23 @@ button:hover {
     background-color: #0056b3;
 }
 
-#result {
+.chart-container {
+    width: 100%;
     margin-top: 20px;
-    font-weight: bold;
+}
+
+#dataTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#dataTable th, #dataTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+#dataTable th {
+    background-color: #f2f2f2;
 }
 

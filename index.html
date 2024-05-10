@@ -5,20 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Insulinemic Index Calculator</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="calculator">
         <h2>Insulinemic Index Calculator</h2>
         <div class="input-group">
-            <label for="testFood">iAUC of Test Food:</label>
-            <input type="number" id="testFood" placeholder="Enter iAUC of Test Food">
+            <label for="insulinInput">Insulin Level:</label>
+            <input type="number" id="insulinInput" placeholder="Enter insulin level">
+            <label for="timeInput">Time:</label>
+            <input type="number" id="timeInput" placeholder="Enter time">
+            <button onclick="addData()">Add Data</button>
         </div>
+
+        <!-- Data Table -->
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Insulin Level</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data rows will be dynamically added here -->
+            </tbody>
+        </table>
+
+        <!-- Graph and AUC Calculation -->
         <div class="input-group">
-            <label for="refFood">iAUC of Ref Food:</label>
-            <input type="number" id="refFood" placeholder="Enter iAUC of Ref Food">
+            <button onclick="plotGraph()">Plot Graph</button>
+            <div class="chart-container">
+                <canvas id="insulinChart"></canvas>
+            </div>
+            <button onclick="calculateAUC()">Calculate AUC</button>
+            <div id="result"></div>
         </div>
-        <button onclick="calculateInsulinemicIndex()">Calculate Insulinemic Index</button>
-        <div id="result"></div>
     </div>
 
     <script src="script.js"></script>
