@@ -4,47 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Insulin Index Calculator</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        table { width: 100%; margin-top: 20px; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        th { background-color: #f4f4f4; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>Insulin Index Calculator</h1>
-    
-    <!-- Section for Tested Food -->
-    <section>
-        <h2>Tested Food</h2> <!-- This is the new label for the section -->
-        
-        <label for="timeInput">Time (min):</label>
-        <input type="number" id="timeInput" placeholder="Enter time">
-        
-        <label for="insulinInput">Insulin concentration (pmol/L):</label>
-        <input type="number" id="insulinInput" placeholder="Enter insulin level">
-        <button onclick="addData()">Add Data</button>
-        
-        <button onclick="clearData()">Clear Data</button>
-        
-        <table id="dataTable" style="display: none;">
-            <thead>
-                <tr>
-                    <th>Time (min)</th>
-                    <th>Insulin concentration (pmol/L)</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-        
-        <button onclick="plotGraph()">Plot Graph</button>
-        <button onclick="calculateAUC()">Calculate AUC for Shaded Area</button>
-        
-        <div id="result"></div>
-    </section>
-    
+    <div class="container">
+        <header>
+            <h1>Insulin Index Calculator</h1>
+        </header>
+        <main class="calculator">
+            <div class="input-group">
+                <label for="timeInput">Time (min):</label>
+                <input type="number" id="timeInput" placeholder="Enter time">
+                
+                <label for="insulinInput">Insulin concentration (pmol/L):</label>
+                <input type="number" id="insulinInput" placeholder="Enter insulin level">
+                <button onclick="addData()">Add Data</button>
+            </div>
+
+            <div id="data-controls">
+                <button onclick="clearData()">Clear Data</button>
+            </div>
+
+            <table id="dataTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Time (min)</th>
+                        <th>Insulin concentration (pmol/L)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            <button onclick="plotGraph()">Plot Graph</button>
+            <div class="chart-container">
+                <canvas id="insulinChart"></canvas>
+            </div>
+            <button onclick="calculateAUC()">Calculate AUC for Shaded Area</button>
+            <div id="result"></div>
+
+        </main>
+       <footer>
+    <div class="developers-team">
+        <h2>Developer Team</h2>
+        <ul>
+            <li>Bhuwaneswaran Vijayam - Clinical Lecturer, Newcastle University Medicine Malaysia (NUMed)</li>
+            <li>Muhammad Faiz Md Shakhih - Lecturer, Universiti Teknologi Malaysia</li>
+            <li>Abdul Salam A Haris - Software Engineer, Universiti Teknologi Malaysia Alumni</li>
+        </ul>
+    </div>
+</footer>
+
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
