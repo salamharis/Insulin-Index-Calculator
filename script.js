@@ -6,18 +6,23 @@ function addData() {
     const insulinLevel = parseFloat(document.getElementById('insulinInput').value);
     const time = parseFloat(document.getElementById('timeInput').value);
     
-    if (!isNaN(insulinLevel) && !isNaN(time) && time >= 0) {
-        if (firstInsulin === null) firstInsulin = insulinLevel;  // Set the first insulin value
-        insulinData.push(insulinLevel);
-        timeData.push(time);
-        document.getElementById('insulinInput').value = '';
-        document.getElementById('timeInput').value = '';
-        updateDataTable();
-        plotGraph();  // Plot or update the graph with each new data entry
+    // Check if the inputs are numbers and not NaN (Not a Number)
+    if (!isNaN(insulinLevel) && !isNaN(time)) {
+        // Check if the first insulin value has not been set yet
+        if (firstInsulin === null && insulinData.length === 0) {
+            firstInsulin = insulinLevel; // Set the first insulin value if this is the first entry
+        }
+        insulinData.push(insulinLevel); // Add insulin level to the array
+        timeData.push(time); // Add time to the array
+        document.getElementById('insulinInput').value = ''; // Clear the insulin input field
+        document.getElementById('timeInput').value = ''; // Clear the time input field
+        updateDataTable(); // Update the data table on the webpage
+        plotGraph(); // Plot or update the graph with the new data
     } else {
-        alert("Please enter valid numbers for time and insulin concentration.");
+        alert("Please enter valid numbers for time and insulin concentration."); // Alert if the input values are not numbers
     }
 }
+
 
 function updateDataTable() {
     const table = document.getElementById('dataTable');
