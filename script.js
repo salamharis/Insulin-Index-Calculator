@@ -1,21 +1,19 @@
 let insulinData = [];
 let timeData = [];
-let firstInsulin = null;  // To store the first insulin value as the threshold
+let firstInsulin = null;  // Variable to hold the first insulin value
 
 function addData() {
     const insulinLevel = parseFloat(document.getElementById('insulinInput').value);
     const time = parseFloat(document.getElementById('timeInput').value);
     
     if (!isNaN(insulinLevel) && !isNaN(time) && time >= 0) {
-        if (firstInsulin === null) firstInsulin = insulinLevel;  // Set first insulin value if not already set
+        if (firstInsulin === null) firstInsulin = insulinLevel;  // Set the first insulin value
         insulinData.push(insulinLevel);
         timeData.push(time);
         document.getElementById('insulinInput').value = '';
         document.getElementById('timeInput').value = '';
         updateDataTable();
-        if (insulinData.length === 1) { // Only plot if there's at least one data point
-            plotGraph();  // Automatically plot graph upon first data entry
-        }
+        plotGraph();  // Plot or update the graph with each new data entry
     } else {
         alert("Please enter valid numbers for time and insulin concentration.");
     }
@@ -23,7 +21,7 @@ function addData() {
 
 function updateDataTable() {
     const table = document.getElementById('dataTable');
-    table.style.display = 'table'; // Show table
+    table.style.display = 'table'; // Make sure the table is visible
     const tableBody = document.querySelector('#dataTable tbody');
     tableBody.innerHTML = '';
     insulinData.forEach((insulin, i) => {
@@ -39,13 +37,10 @@ function updateDataTable() {
 function plotGraph() {
     const ctx = document.getElementById('insulinChart').getContext('2d');
     
-    // Clear previous chart, if any
     if (window.myChart) {
         window.myChart.destroy();
     }
     
-    const threshold = 20; // Set your threshold value here
-
     window.myChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -56,16 +51,19 @@ function plotGraph() {
                 borderColor: 'rgba(54, 162, 235, 1)',
                 backgroundColor: function(context) {
                     const chart = context.chart;
-                    const {ctx, chartArea} = chart;
+                    const {ctx, chartArea, scales} = chart;
 
                     if (!chartArea) {
-                        // This case happens on initial chart load
                         return null;
                     }
+
                     const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+                    const yPosThreshold = scales.y.getPixelForValue(firstInsulin);
+
                     gradient.addColorStop(0, 'rgba(0, 0, 0, 0)'); // Transparent below the threshold
-                    gradient.addColorStop(Math.max(0, (threshold - chart.scales.y.min) / (chart.scales.y.max - chart.scales.y.min)), 'rgba(54, 162, 235, 0.2)');
-                    gradient.addColorStop(1, 'rgba(54, 162, 235, 0.2)'); // Color above the threshold
+                    gradient.addColorStop((chartArea.bottom - yPosThreshold) / chartArea.height, 'rgba(0, 0, 0, 0)');
+                    gradient.addColorStop((chartArea.bottom - yPosThreshold) / chartArea.height, 'rgba(54, 162, 235, 0.2)');
+                    gradient.addColorStop(1, 'rgba(54, 162, 235, 0.2)');
 
                     return gradient;
                 },
@@ -93,36 +91,25 @@ function plotGraph() {
             },
             elements: {
                 line: {
-                    tension: 0 // Disables bezier curves
-                }
-            },
-            plugins: {
-                filler: {
-                    propagate: false
-                },
-                tooltip: {
-                    mode: 'index',
-                    intersect: false
+                    tension: 0  // This makes the line straight (no curves)
                 }
             }
         }
     });
 }
 
-function calculateAUC() {
-    let auc = 0;
-    for (let i = 0; i < insulinData.length - 1; i++) {
-        auc += (insulinData[i] + insulinData[i + 1]) / 2 * (timeData[i + 1] - timeData[i]);
-    }
-    const resultElement = document.getElementById('result');
-    resultElement.innerHTML = 'The AUC (Area Under the Curve) is: ' + auc.toFixed(2);
+function removeData(index) {
+    insulinData.splice(index, 1);
+    timeData.splice(index, 1);
+    updateDataTable();
+    plotGraph();
 }
 
 function clearData() {
     insulinData = [];
     timeData = [];
     firstInsulin = null;
-    document.getElementById('dataTable').style.display = 'none'; // Hide table
+    document.getElementById('dataTable').style.display = 'none';
     updateDataTable();
-    if(window.myChart !== undefined) window.myChart.destroy();
+    if (window.myChart) window.myChart.destroy();
 }
