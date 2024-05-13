@@ -1,15 +1,15 @@
 let insulinData = [];
 let timeData = [];
-let minInsulin = Infinity;
+let firstInsulin = null;
 
 function addData() {
     const insulinLevel = parseFloat(document.getElementById('insulinInput').value);
     const time = parseFloat(document.getElementById('timeInput').value);
     
-    if (!isNaN(insulinLevel) && !isNaN(time) && insulinLevel > 0 && time >= 0) {
+    if (!isNaN(insulinLevel) && !isNaN(time) && time >= 0) {
+        if (firstInsulin === null) firstInsulin = insulinLevel;
         insulinData.push(insulinLevel);
         timeData.push(time);
-        if (insulinLevel < minInsulin) minInsulin = insulinLevel;
         document.getElementById('insulinInput').value = '';
         document.getElementById('timeInput').value = '';
         updateDataTable();
@@ -19,12 +19,15 @@ function addData() {
 }
 
 function updateDataTable() {
+    const table = document.getElementById('dataTable');
+    table.style.display = 'table'; // Show table
     const tableBody = document.querySelector('#dataTable tbody');
     tableBody.innerHTML = '';
     insulinData.forEach((insulin, i) => {
         const row = `<tr>
                         <td>${timeData[i]}</td>
                         <td>${insulin}</td>
+                        <td><button onclick="removeData(${i})">Remove</button></td>
                     </tr>`;
         tableBody.innerHTML += row;
     });
@@ -36,6 +39,8 @@ function plotGraph() {
     if(window.myChart !== undefined)
         window.myChart.destroy();
     
+    const shadedAreas = insulinData.map(data => data >= firstInsulin ? 'rgba(54, 162, 235, 0.2)' : 'rgba(0, 0, 0, 0)');
+
     window.myChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -44,13 +49,9 @@ function plotGraph() {
                 label: 'Insulin Data',
                 data: insulinData,
                 borderColor: 'rgba(54, 162, 235, 1)',
-                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                backgroundColor: shadedAreas,
                 borderWidth: 1,
-                fill: {
-                    target: 'origin',
-                    above: 'rgba(54, 162, 235, 0.2)', // Shade above minimum
-                    below: 'rgba(255, 255, 255, 0)' // Transparent below minimum
-                }
+                fill: true
             }]
         },
         options: {
@@ -81,4 +82,13 @@ function calculateAUC() {
     }
     const resultElement = document.getElementById('result');
     resultElement.innerHTML = 'The AUC (Area Under the Curve) is: ' + auc.toFixed(2);
+}
+
+function clearData() {
+    insulinData = [];
+    timeData = [];
+    firstInsulin = null;
+    document.getElementById('dataTable').style.display = 'none'; // Hide table
+    updateDataTable();
+    if(window.myChart !== undefined) window.myChart.destroy();
 }
