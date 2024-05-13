@@ -8,44 +8,48 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="calculator">
-        <h2>Insulin Index Calculator</h2>
-        <div class="input-group">
-            <label for="timeInput">Time (min):</label>
-            <input type="number" id="timeInput" placeholder="Enter time"> &nbsp;
-            
-            <label for="insulinInput">Insulin concentration (pmol/L):</label>
-            <input type="number" id="insulinInput" placeholder="Enter insulin level">
-            <button onclick="addData()">Add Data</button>
-        </div>
+    <div class="container">
+        <header>
+            <h1>Insulin Index Calculator</h1>
+        </header>
+        <main class="calculator">
+            <div class="input-group">
+                <label for="timeInput">Time (min):</label>
+                <input type="number" id="timeInput" placeholder="Enter time">
+                
+                <label for="insulinInput">Insulin concentration (pmol/L):</label>
+                <input type="number" id="insulinInput" placeholder="Enter insulin level">
+                <button onclick="addData()">Add Data</button>
+            </div>
 
-        <table id="dataTable">
-            <thead>
-                <tr>
-                    <th>Time (min)</th>
-                    <th>Insulin concentration (pmol/L)</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Time (min)</th>
+                        <th>Insulin concentration (pmol/L)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
 
-        <button onclick="plotGraph()">Plot Graph</button>
-        <div class="chart-container">
-            <canvas id="insulinChart"></canvas>
-        </div>
-        <button onclick="calculateAUC()">Calculate AUC</button>
-        <div id="result"></div>
+            <button onclick="plotGraph()">Plot Graph</button>
+            <div class="chart-container">
+                <canvas id="insulinChart"></canvas>
+            </div>
+            <button onclick="calculateAUC()">Calculate AUC</button>
+            <div id="result"></div>
+        </main>
+        <footer>
+            <div class="developers-team">
+                <h2>Developers Team</h2>
+                <ul>
+                    <li>Salam (Software Engineer)</li>
+                    <li>Faiz (Biomedical Engineer)</li>
+                </ul>
+            </div>
+        </footer>
     </div>
-
-    <div class="developers-team">
-        <h2>Developers Team</h2>
-        <ul>
-            <li>Salam (Software Engineer)</li>
-            <li>Faiz (Biomedical Engineer)</li>
-        </ul>
-    </div>
-
     <script src="script.js"></script>
 </body>
 </html>
