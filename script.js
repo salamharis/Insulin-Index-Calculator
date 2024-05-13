@@ -118,3 +118,17 @@ function clearData() {
     updateDataTable();
     if (window.myChart) window.myChart.destroy();
 }
+
+function calculateAUC() {
+    let auc = 0;
+    // Iterate over the data points, but only consider segments where both points are above the threshold.
+    for (let i = 0; i < insulinData.length - 1; i++) {
+        if (insulinData[i] >= firstInsulin && insulinData[i + 1] >= firstInsulin) {
+            // Calculate AUC using the Trapezoidal rule, but only for points above the threshold.
+            auc += (insulinData[i] + insulinData[i + 1]) / 2 * (timeData[i + 1] - timeData[i]);
+        }
+    }
+
+    const resultElement = document.getElementById('result');
+    resultElement.innerHTML = 'The AUC (Area Under the Curve) for shaded area is: ' + auc.toFixed(2);
+}
