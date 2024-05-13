@@ -22,11 +22,16 @@
                 <button onclick="addData()">Add Data</button>
             </div>
 
-            <table id="dataTable">
+            <div id="data-controls">
+                <button onclick="clearData()">Clear Data</button>
+            </div>
+
+            <table id="dataTable" style="display: none;">
                 <thead>
                     <tr>
                         <th>Time (min)</th>
                         <th>Insulin concentration (pmol/L)</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
