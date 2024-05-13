@@ -1,62 +1,82 @@
-body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+let insulinData = [];
+let timeData = [];
+let minInsulin = Infinity;
+
+function addData() {
+    const insulinLevel = parseFloat(document.getElementById('insulinInput').value);
+    const time = parseFloat(document.getElementById('timeInput').value);
+    
+    if (!isNaN(insulinLevel) && !isNaN(time)) {
+        insulinData.push(insulinLevel);
+        timeData.push(time);
+        if (insulinLevel < minInsulin) minInsulin = insulinLevel;
+        document.getElementById('insulinInput').value = '';
+        document.getElementById('timeInput').value = '';
+        updateDataTable();
+    }
 }
 
-.calculator {
-    width: 80%;
-    margin: 50px auto;
-    background-color: #fff;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+function updateDataTable() {
+    const tableBody = document.querySelector('#dataTable tbody');
+    tableBody.innerHTML = '';
+    for (let i = 0; i < insulinData.length; i++) {
+        const row = `<tr>
+                        <td>${timeData[i]}</td>
+                        <td>${insulinData[i]}</td>
+                    </tr>`;
+        tableBody.innerHTML += row;
+    }
 }
 
-.input-group {
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+function plotGraph() {
+    const ctx = document.getElementById('insulinChart').getContext('2d');
+    
+    if(window.myChart !== undefined)
+        window.myChart.destroy();
+    
+    window.myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: timeData,
+            datasets: [{
+                label: 'Insulin Data',
+                data: insulinData,
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1,
+                fill: {
+                    target: 'origin',
+                    above: 'rgba(54, 162, 235, 0.2)', // Shade above minimum
+                    below: 'rgba(255, 255, 255, 0)' // Transparent below minimum
+                }
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Time (min)'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Insulin Level (pmol/L)'
+                    }
+                }
+            }
+        }
+    });
 }
 
-.input-group label, .input-group input, button {
-    margin-right: 10px;
-}
-
-button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-.chart-container {
-    width: 100%;
-    height: 400px;
-    margin-top: 20px;
-}
-
-#dataTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 50px;
-}
-
-#dataTable th, #dataTable td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-}
-
-#dataTable th {
-    background-color: #f9f9f9;
+function calculateAUC() {
+    let auc = 0;
+    for (let i = 0; i < insulinData.length - 1; i++) {
+        auc += (insulinData[i] + insulinData[i + 1]) / 2 * (timeData[i + 1] - timeData[i]);
+    }
+    const resultElement = document.getElementById('result');
+    resultElement.innerHTML = 'The AUC (Area Under the Curve) is: ' + auc.toFixed(2);
 }
