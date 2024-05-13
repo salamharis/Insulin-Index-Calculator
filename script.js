@@ -1,18 +1,21 @@
 let insulinData = [];
 let timeData = [];
-let firstInsulin = null;
+let firstInsulin = null;  // To store the first insulin value as the threshold
 
 function addData() {
     const insulinLevel = parseFloat(document.getElementById('insulinInput').value);
     const time = parseFloat(document.getElementById('timeInput').value);
     
     if (!isNaN(insulinLevel) && !isNaN(time) && time >= 0) {
-        if (firstInsulin === null) firstInsulin = insulinLevel;
+        if (firstInsulin === null) firstInsulin = insulinLevel;  // Set first insulin value if not already set
         insulinData.push(insulinLevel);
         timeData.push(time);
         document.getElementById('insulinInput').value = '';
         document.getElementById('timeInput').value = '';
         updateDataTable();
+        if (insulinData.length === 1) { // Only plot if there's at least one data point
+            plotGraph();  // Automatically plot graph upon first data entry
+        }
     } else {
         alert("Please enter valid numbers for time and insulin concentration.");
     }
@@ -36,11 +39,11 @@ function updateDataTable() {
 function plotGraph() {
     const ctx = document.getElementById('insulinChart').getContext('2d');
     
-    if(window.myChart !== undefined)
+    // Clear previous chart, if any
+    if (window.myChart) {
         window.myChart.destroy();
+    }
     
-    const shadedAreas = insulinData.map(data => data >= firstInsulin ? 'rgba(54, 162, 235, 0.2)' : 'rgba(0, 0, 0, 0)');
-
     window.myChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -49,7 +52,7 @@ function plotGraph() {
                 label: 'Insulin Data',
                 data: insulinData,
                 borderColor: 'rgba(54, 162, 235, 1)',
-                backgroundColor: shadedAreas,
+                backgroundColor: insulinData.map(value => value >= firstInsulin ? 'rgba(54, 162, 235, 0.2)' : 'rgba(0, 0, 0, 0)'),
                 borderWidth: 1,
                 fill: true
             }]
@@ -69,6 +72,11 @@ function plotGraph() {
                         display: true,
                         text: 'Insulin Level (pmol/L)'
                     }
+                }
+            },
+            elements: {
+                line: {
+                    tension: 0  // Disables bezier curves
                 }
             }
         }
