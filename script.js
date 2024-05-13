@@ -1,84 +1,84 @@
-body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-    color: #333;
+let insulinData = [];
+let timeData = [];
+let minInsulin = Infinity;
+
+function addData() {
+    const insulinLevel = parseFloat(document.getElementById('insulinInput').value);
+    const time = parseFloat(document.getElementById('timeInput').value);
+    
+    if (!isNaN(insulinLevel) && !isNaN(time) && insulinLevel > 0 && time >= 0) {
+        insulinData.push(insulinLevel);
+        timeData.push(time);
+        if (insulinLevel < minInsulin) minInsulin = insulinLevel;
+        document.getElementById('insulinInput').value = '';
+        document.getElementById('timeInput').value = '';
+        updateDataTable();
+    } else {
+        alert("Please enter valid numbers for time and insulin concentration.");
+    }
 }
 
-.container {
-    max-width: 960px;
-    margin: auto;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 6px 10px rgba(0,0,0,0.1);
+function updateDataTable() {
+    const tableBody = document.querySelector('#dataTable tbody');
+    tableBody.innerHTML = '';
+    insulinData.forEach((insulin, i) => {
+        const row = `<tr>
+                        <td>${timeData[i]}</td>
+                        <td>${insulin}</td>
+                    </tr>`;
+        tableBody.innerHTML += row;
+    });
 }
 
-header {
-    padding: 20px 0;
-    text-align: center;
+function plotGraph() {
+    const ctx = document.getElementById('insulinChart').getContext('2d');
+    
+    if(window.myChart !== undefined)
+        window.myChart.destroy();
+    
+    window.myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: timeData,
+            datasets: [{
+                label: 'Insulin Data',
+                data: insulinData,
+                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderWidth: 1,
+                fill: {
+                    target: 'origin',
+                    above: 'rgba(54, 162, 235, 0.2)', // Shade above minimum
+                    below: 'rgba(255, 255, 255, 0)' // Transparent below minimum
+                }
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Time (min)'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Insulin Level (pmol/L)'
+                    }
+                }
+            }
+        }
+    });
 }
 
-.calculator {
-    margin: 20px 0;
-}
-
-.input-group {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.input-group label, .input-group input, button {
-    margin: 5px;
-}
-
-button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-.chart-container {
-    width: 100%;
-    height: 400px;
-}
-
-#dataTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-#dataTable th, #dataTable td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-}
-
-#dataTable th {
-    background-color: #f9f9f9;
-}
-
-footer {
-    text-align: center;
-    padding: 20px 0;
-}
-
-.developers-team h2 {
-    margin-bottom: 10px;
-}
-
-.developers-team ul {
-    list-style-type: none;
-    padding: 0;
+function calculateAUC() {
+    let auc = 0;
+    for (let i = 0; i < insulinData.length - 1; i++) {
+        auc += (insulinData[i] + insulinData[i + 1]) / 2 * (timeData[i + 1] - timeData[i]);
+    }
+    const resultElement = document.getElementById('result');
+    resultElement.innerHTML = 'The AUC (Area Under the Curve) is: ' + auc.toFixed(2);
 }
