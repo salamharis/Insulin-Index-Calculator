@@ -44,6 +44,8 @@ function plotGraph() {
         window.myChart.destroy();
     }
     
+    const threshold = 20; // Set your threshold value here
+
     window.myChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -52,9 +54,23 @@ function plotGraph() {
                 label: 'Insulin Data',
                 data: insulinData,
                 borderColor: 'rgba(54, 162, 235, 1)',
-                backgroundColor: insulinData.map(value => value >= firstInsulin ? 'rgba(54, 162, 235, 0.2)' : 'rgba(0, 0, 0, 0)'),
+                backgroundColor: function(context) {
+                    const chart = context.chart;
+                    const {ctx, chartArea} = chart;
+
+                    if (!chartArea) {
+                        // This case happens on initial chart load
+                        return null;
+                    }
+                    const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+                    gradient.addColorStop(0, 'rgba(0, 0, 0, 0)'); // Transparent below the threshold
+                    gradient.addColorStop(Math.max(0, (threshold - chart.scales.y.min) / (chart.scales.y.max - chart.scales.y.min)), 'rgba(54, 162, 235, 0.2)');
+                    gradient.addColorStop(1, 'rgba(54, 162, 235, 0.2)'); // Color above the threshold
+
+                    return gradient;
+                },
                 borderWidth: 1,
-                fill: true
+                fill: 'start'
             }]
         },
         options: {
@@ -71,12 +87,22 @@ function plotGraph() {
                     title: {
                         display: true,
                         text: 'Insulin Level (pmol/L)'
-                    }
+                    },
+                    beginAtZero: false
                 }
             },
             elements: {
                 line: {
-                    tension: 0  // Disables bezier curves
+                    tension: 0 // Disables bezier curves
+                }
+            },
+            plugins: {
+                filler: {
+                    propagate: false
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
                 }
             }
         }
