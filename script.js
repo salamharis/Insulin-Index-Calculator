@@ -1,32 +1,29 @@
 let insulinData = [];
 let timeData = [];
-let firstInsulin = null;  // Variable to hold the first insulin value
+let firstInsulin = null;
 
 function addData() {
     const insulinLevel = parseFloat(document.getElementById('insulinInput').value);
     const time = parseFloat(document.getElementById('timeInput').value);
     
-    // Check if the inputs are numbers and not NaN (Not a Number)
     if (!isNaN(insulinLevel) && !isNaN(time)) {
-        // Check if the first insulin value has not been set yet
         if (firstInsulin === null && insulinData.length === 0) {
-            firstInsulin = insulinLevel; // Set the first insulin value if this is the first entry
+            firstInsulin = insulinLevel;
         }
-        insulinData.push(insulinLevel); // Add insulin level to the array
-        timeData.push(time); // Add time to the array
-        document.getElementById('insulinInput').value = ''; // Clear the insulin input field
-        document.getElementById('timeInput').value = ''; // Clear the time input field
-        updateDataTable(); // Update the data table on the webpage
-        plotGraph(); // Plot or update the graph with the new data
+        insulinData.push(insulinLevel);
+        timeData.push(time);
+        document.getElementById('insulinInput').value = '';
+        document.getElementById('timeInput').value = '';
+        updateDataTable();
+        plotGraph();
     } else {
-        alert("Please enter valid numbers for time and insulin concentration."); // Alert if the input values are not numbers
+        alert("Please enter valid numbers for time and insulin concentration.");
     }
 }
 
-
 function updateDataTable() {
     const table = document.getElementById('dataTable');
-    table.style.display = 'table'; // Make sure the table is visible
+    table.style.display = 'table';
     const tableBody = document.querySelector('#dataTable tbody');
     tableBody.innerHTML = '';
     insulinData.forEach((insulin, i) => {
@@ -63,7 +60,7 @@ function plotGraph() {
                     }
 
                     const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
-                    const yPosThreshold = scales.y.getPixelForValue(firstInsulin);
+                    const yPosThreshold = scales.y.getPixelForValue(insulinData[0]);  // Use first insulin value as threshold
 
                     gradient.addColorStop(0, 'rgba(0, 0, 0, 0)'); // Transparent below the threshold
                     gradient.addColorStop((chartArea.bottom - yPosThreshold) / chartArea.height, 'rgba(0, 0, 0, 0)');
@@ -96,7 +93,7 @@ function plotGraph() {
             },
             elements: {
                 line: {
-                    tension: 0  // This makes the line straight (no curves)
+                    tension: 0
                 }
             }
         }
@@ -120,15 +117,47 @@ function clearData() {
 }
 
 function calculateAUC() {
-    let auc = 0;
-    // Iterate over the data points, but only consider segments where both points are above the threshold.
-    for (let i = 0; i < insulinData.length - 1; i++) {
-        if (insulinData[i] >= firstInsulin && insulinData[i + 1] >= firstInsulin) {
-            // Calculate AUC using the Trapezoidal rule, but only for points above the threshold.
-            auc += (insulinData[i] + insulinData[i + 1]) / 2 * (timeData[i + 1] - timeData[i]);
+    if (insulinData.length < 2 || timeData.length < 2) {
+        alert("Not enough data points to calculate AUC.");
+        return;
+    }
+
+    // Normalize insulin data
+    const newInsul = insulinData.map(value => value - insulinData[0]);
+
+    // Create a more granular time array
+    const tMin = Math.min(...timeData);
+    const tMax = Math.max(...timeData);
+    const t = [];
+    for (let i = 0; i <= 1000; i++) {
+        t.push(tMin + (i / 1000) * (tMax - tMin));
+    }
+
+    // Interpolate insulin values
+    const nInsul = t.map(time => {
+        let leftIndex = 0;
+        while (leftIndex < timeData.length - 1 && timeData[leftIndex + 1] <= time) {
+            leftIndex++;
         }
+        if (leftIndex === timeData.length - 1) {
+            return newInsul[leftIndex];
+        }
+        const rightIndex = leftIndex + 1;
+        const fraction = (time - timeData[leftIndex]) / (timeData[rightIndex] - timeData[leftIndex]);
+        return newInsul[leftIndex] + fraction * (newInsul[rightIndex] - newInsul[leftIndex]);
+    });
+
+    // Filter positive values
+    const posIndices = nInsul.map((value, index) => value > 0 ? index : -1).filter(index => index !== -1);
+    const posInsul = posIndices.map(index => nInsul[index]);
+    const posT = posIndices.map(index => t[index]);
+
+    // Calculate AUC using trapezoidal rule
+    let auc = 0;
+    for (let i = 0; i < posInsul.length - 1; i++) {
+        auc += (posInsul[i] + posInsul[i + 1]) * (posT[i + 1] - posT[i]) / 2;
     }
 
     const resultElement = document.getElementById('result');
-    resultElement.innerHTML = 'The AUC (Area Under the Curve) for shaded area is: ' + auc.toFixed(2);
+    resultElement.innerHTML = 'The AUC (Area Under the Curve) for shaded area is: ' + Math.round(auc);
 }
