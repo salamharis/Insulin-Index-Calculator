@@ -1,7 +1,9 @@
+// Initialize global arrays to store data
 let insulinData = [];
 let timeData = [];
 let firstInsulin = null;
 
+// Function to add data
 function addData() {
     const insulinLevel = parseFloat(document.getElementById('insulinInput').value);
     const time = parseFloat(document.getElementById('timeInput').value);
@@ -21,6 +23,7 @@ function addData() {
     }
 }
 
+// Function to update the data table
 function updateDataTable() {
     const table = document.getElementById('dataTable');
     table.style.display = 'table';
@@ -30,12 +33,16 @@ function updateDataTable() {
         const row = `<tr>
                         <td>${timeData[i]}</td>
                         <td>${insulin}</td>
-                        <td><button onclick="removeData(${i})">Remove</button></td>
+                        <td>
+                            <button onclick="removeData(${i})">Remove</button>
+                            <button onclick="editData(${i})">Edit</button>
+                        </td>
                     </tr>`;
         tableBody.innerHTML += row;
     });
 }
 
+// Function to plot the graph
 function plotGraph() {
     const ctx = document.getElementById('insulinChart').getContext('2d');
     
@@ -100,6 +107,7 @@ function plotGraph() {
     });
 }
 
+// Function to remove data entry
 function removeData(index) {
     insulinData.splice(index, 1);
     timeData.splice(index, 1);
@@ -107,6 +115,20 @@ function removeData(index) {
     plotGraph();
 }
 
+// Function to edit data entry
+function editData(index) {
+    const timeInput = document.getElementById('timeInput');
+    const insulinInput = document.getElementById('insulinInput');
+
+    // Populate inputs with current data for editing
+    timeInput.value = timeData[index];
+    insulinInput.value = insulinData[index];
+
+    // Remove the data entry from arrays
+    removeData(index);
+}
+
+// Function to clear all data
 function clearData() {
     insulinData = [];
     timeData = [];
@@ -118,6 +140,7 @@ function clearData() {
     if (window.myChart) window.myChart.destroy();
 }
 
+// Function to calculate AUC
 function calculateAUC() {
     if (insulinData.length < 2 || timeData.length < 2) {
         alert("Not enough data points to calculate AUC.");
@@ -167,6 +190,7 @@ function calculateAUC() {
     document.getElementById('savePdfBtn').style.display = 'inline-block';
 }
 
+// Function to save data to PDF
 async function saveToPdf() {
     if (insulinData.length === 0 || timeData.length === 0) {
         alert("No data to save. Please add some data first.");
