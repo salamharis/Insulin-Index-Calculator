@@ -117,19 +117,9 @@ function removeData(index) {
 
 // Function to edit data entry
 function editData(index) {
-    const insulinLevel = parseFloat(document.getElementById('insulinInput').value);
-    const time = parseFloat(document.getElementById('timeInput').value);
-
-    if (!isNaN(insulinLevel) && !isNaN(time)) {
-        insulinData[index] = insulinLevel;
-        timeData[index] = time;
-        document.getElementById('insulinInput').value = '';
-        document.getElementById('timeInput').value = '';
-        updateDataTable();
-        plotGraph();
-    } else {
-        alert("Please enter valid numbers for time and insulin concentration.");
-    }
+    // Populate input fields with current data for editing
+    document.getElementById('insulinInput').value = insulinData[index];
+    document.getElementById('timeInput').value = timeData[index];
 }
 
 // Function to clear all data
