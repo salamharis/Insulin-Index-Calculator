@@ -6,6 +6,9 @@
     <title>Insulin Index Calculator</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.20/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -21,11 +24,9 @@
                 <input type="number" id="insulinInput" placeholder="Enter insulin level">
                 <button onclick="addData()">Add Data</button>
             </div>
-
             <div id="data-controls">
                 <button onclick="clearData()">Clear Data</button>
             </div>
-
             <table id="dataTable" style="display: none;">
                 <thead>
                     <tr>
@@ -37,26 +38,24 @@
                 <tbody>
                 </tbody>
             </table>
-
             <button onclick="plotGraph()">Plot Graph</button>
             <div class="chart-container">
                 <canvas id="insulinChart"></canvas>
             </div>
             <button onclick="calculateAUC()">Calculate AUC for Shaded Area</button>
             <div id="result"></div>
-
+            <button id="savePdfBtn" onclick="saveToPdf()" style="display: none;">Save to PDF</button>
         </main>
-       <footer>
-    <div class="developers-team">
-        <h2>Developer Team</h2>
-        <ul>
-            <li>Bhuwaneswaran Vijayam - Clinical Lecturer, Newcastle University Medicine Malaysia (NUMed)</li>
-            <li>Muhammad Faiz Md Shakhih - Lecturer, Universiti Teknologi Malaysia</li>
-            <li>Abdul Salam A Haris - Software Engineer, Universiti Teknologi Malaysia Alumni</li>
-        </ul>
-    </div>
-</footer>
-
+        <footer>
+            <div class="developers-team">
+                <h2>Developer Team</h2>
+                <ul>
+                    <li>Bhuwaneswaran Vijayam - Clinical Lecturer, Newcastle University Medicine Malaysia (NUMed)</li>
+                    <li>Muhammad Faiz Md Shakhih - Lecturer, Universiti Teknologi Malaysia</li>
+                    <li>Abdul Salam A Haris - Software Engineer, Universiti Teknologi Malaysia Alumni</li>
+                </ul>
+            </div>
+        </footer>
     </div>
     <script src="script.js"></script>
 </body>

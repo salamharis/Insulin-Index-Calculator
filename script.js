@@ -112,6 +112,8 @@ function clearData() {
     timeData = [];
     firstInsulin = null;
     document.getElementById('dataTable').style.display = 'none';
+    document.getElementById('savePdfBtn').style.display = 'none';
+    document.getElementById('result').innerHTML = '';
     updateDataTable();
     if (window.myChart) window.myChart.destroy();
 }
@@ -159,5 +161,60 @@ function calculateAUC() {
     }
 
     const resultElement = document.getElementById('result');
-    resultElement.innerHTML = 'The AUC (Area Under the Curve) for shaded area is: ' + Math.round(auc);
+    resultElement.innerHTML = `The AUC (Area Under the Curve) for shaded area is: ${Math.round(auc)}`;
+
+    // Show the "Save to PDF" button after AUC calculation
+    document.getElementById('savePdfBtn').style.display = 'inline-block';
+}
+
+async function saveToPdf() {
+    if (insulinData.length === 0 || timeData.length === 0) {
+        alert("No data to save. Please add some data first.");
+        return;
+    }
+
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Add title
+        doc.setFontSize(16);
+        doc.text("Insulin Index Calculator Results", 105, 15, null, null, "center");
+
+        // Set up table
+        const columns = ["Time (min)", "Insulin concentration (pmol/L)"];
+        const data = timeData.map((time, index) => [time.toString(), insulinData[index].toString()]);
+        
+        // Add table
+        doc.autoTable({
+            head: [columns],
+            body: data,
+            startY: 25,
+            styles: { fontSize: 12, cellPadding: 2 },
+            headStyles: { fillColor: [200, 200, 200], textColor: 20 }, // Gray background for header
+            columnStyles: {
+                0: { cellWidth: 40 },
+                1: { cellWidth: 80 }
+            },
+        });
+
+        // Get the Y position after the table
+        const finalY = doc.lastAutoTable.finalY || 25;
+
+        // Capture and add chart image
+        const canvas = await html2canvas(document.getElementById('insulinChart'));
+        const imgData = canvas.toDataURL('image/png');
+        doc.addImage(imgData, 'PNG', 10, finalY + 10, 190, 100);
+
+        // Add AUC value
+        const aucValue = document.getElementById('result').innerText;
+        doc.setFontSize(14);
+        doc.text(aucValue, 14, finalY + 120);
+
+        // Save the PDF
+        doc.save('insulin_data.pdf');
+    } catch (error) {
+        console.error('Error saving to PDF:', error);
+        alert('An error occurred while saving to PDF. Please try again.');
+    }
 }
