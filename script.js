@@ -161,7 +161,7 @@ function calculateAUC() {
     }
 
     const resultElement = document.getElementById('result');
-    resultElement.innerHTML = `The AUC (Area Under the Curve) for shaded area is: ${Math.round(auc)}`;
+    resultElement.innerHTML = `The AUC (Area Under the Curve) for shaded area is: ${auc.toFixed(2)}`;
 
     // Show the "Save to PDF" button after AUC calculation
     document.getElementById('savePdfBtn').style.display = 'inline-block';
