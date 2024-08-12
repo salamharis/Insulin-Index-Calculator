@@ -13,38 +13,92 @@
 <body>
     <div class="container">
         <header>
+            <div class="logo-container">
+                <img src="images/iUC_Calculator_Logo.png" alt="iUC Calculator Logo" class="logo left-logo">
+                <div class="right-logos">
+                    <img src="images/NUMed_Logo.png" alt="NuMed Logo" class="logo">
+                    <img src="images/UTM_Logo.png" alt="UTM Logo" class="logo">
+                </div>
+            </div>
             <h1>Insulin Index Calculator</h1>
         </header>
-        <main class="calculator">
-            <div class="input-group">
-                <label for="timeInput">Time (min):</label>
-                <input type="number" id="timeInput" placeholder="Enter time">
-                
-                <label for="insulinInput">Insulin concentration (pmol/L):</label>
-                <input type="number" id="insulinInput" placeholder="Enter insulin level">
-                <button onclick="addData()">Add Data</button>
+        <nav class="tabs">
+            <button class="tab-button active" onclick="openTab(event, 'calculate')">Calculate</button>
+            <button class="tab-button" onclick="openTab(event, 'about')">About iAUC Calculator</button>
+            <button class="tab-button" onclick="openTab(event, 'license')">Licence & Version History</button>
+            <button class="tab-button" onclick="openTab(event, 'citing')">Citing the Calculator</button>
+        </nav>
+        <main>
+            <div id="calculate" class="tab-content active">
+                <div class="calculator">
+                    <div class="input-group">
+                        <div class="row parameter-selection">
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="parameter" value="glucose" checked> Glucose
+                                </label>
+                                <label>
+                                    <input type="radio" name="parameter" value="insulin"> Insulin
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row unit-selection">
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="unit" value="g/dL"> g/dL
+                                </label>
+                                <label>
+                                    <input type="radio" name="unit" value="mg/dL"> mg/dL
+                                </label>
+                                <label>
+                                    <input type="radio" name="unit" value="mmol/L" checked> mmol/L
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row data-input">
+                            <label for="timeInput">Time (min):</label>
+                            <input type="number" id="timeInput" placeholder="Enter time">
+                            
+                            <label for="concentrationInput">Concentration:</label>
+                            <input type="number" id="concentrationInput" placeholder="Enter concentration">
+                            <button onclick="addData()">Add Data</button>
+                        </div>
+                    </div>
+                    <div class="row" id="data-controls">
+                        <button onclick="clearData()">Clear Data</button>
+                        <button onclick="plotGraph()">Plot Graph</button>
+                    </div>
+                    <table id="dataTable" style="display: none;">
+                        <thead>
+                            <tr>
+                                <th>Time (min)</th>
+                                <th>Concentration</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <div class="chart-container">
+                        <canvas id="concentrationChart"></canvas>
+                    </div>
+                    <button onclick="calculateAUC()">Calculate AUC for Shaded Area</button>
+                    <div id="result"></div>
+                    <button id="savePdfBtn" onclick="saveToPdf()" style="display: none;">Save to PDF</button>
+                </div>
             </div>
-            <div id="data-controls">
-                <button onclick="clearData()">Clear Data</button>
+            <div id="about" class="tab-content">
+                <h2>About iAUC Calculator</h2>
+                <p>Information about the iAUC Calculator goes here.</p>
             </div>
-            <table id="dataTable" style="display: none;">
-                <thead>
-                    <tr>
-                        <th>Time (min)</th>
-                        <th>Insulin concentration (pmol/L)</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
-            <button onclick="plotGraph()">Plot Graph</button>
-            <div class="chart-container">
-                <canvas id="insulinChart"></canvas>
+            <div id="license" class="tab-content">
+                <h2>Licence & Version History</h2>
+                <p>Licence information and version history goes here.</p>
             </div>
-            <button onclick="calculateAUC()">Calculate AUC for Shaded Area</button>
-            <div id="result"></div>
-            <button id="savePdfBtn" onclick="saveToPdf()" style="display: none;">Save to PDF</button>
+            <div id="citing" class="tab-content">
+                <h2>Citing the Calculator</h2>
+                <p>Information on how to cite this calculator goes here.</p>
+            </div>
         </main>
         <footer>
             <div class="developers-team">
@@ -58,5 +112,20 @@
         </footer>
     </div>
     <script src="script.js"></script>
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabContent, tabButtons;
+            tabContent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].style.display = "none";
+            }
+            tabButtons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].className = tabButtons[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+    </script>
 </body>
 </html>
