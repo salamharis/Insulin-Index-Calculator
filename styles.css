@@ -191,3 +191,216 @@ footer {
         margin: 10px 0;
     }
 }
+
+/* New styles for parameter and unit selection */
+.parameter-selection,
+.unit-selection {
+    margin-bottom: 15px;
+}
+
+#glucoseUnits,
+#insulinUnits {
+    display: flex;
+    gap: 15px;
+}
+
+#insulinUnits {
+    display: none;
+}
+
+/* Updated button styles */
+.remove-btn, .modify-btn, .save-btn, .cancel-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 5px;
+    font-size: 12px;
+}
+
+.remove-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.remove-btn:hover {
+    background-color: #c82333;
+}
+
+.modify-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.modify-btn:hover {
+    background-color: #0056b3;
+}
+
+.save-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #218838;
+}
+
+.cancel-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background-color: #5a6268;
+}
+
+/* Styles for Clear Data and Plot Graph buttons */
+.clear-data-btn, .plot-graph-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    width: 120px;
+}
+
+.clear-data-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.clear-data-btn:hover {
+    background-color: #c82333;
+}
+
+.plot-graph-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.plot-graph-btn:hover {
+    background-color: #0056b3;
+}
+
+#data-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+#data-controls button {
+    flex: 1;
+    max-width: 150px;
+}
+
+/* Ensure buttons in table cells are on the same line */
+#dataTable td:last-child {
+    white-space: nowrap;
+}
+
+/* Inline editing styles */
+.edit-input {
+    width: 80px;
+    padding: 5px;
+    border: 1px solid #007bff;
+    border-radius: 3px;
+}
+
+.save-btn, .cancel-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 5px;
+}
+
+.save-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #218838;
+}
+
+.cancel-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background-color: #5a6268;
+}
+
+.tabs {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+.tab-button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+.tab-button:hover {
+    background-color: #ddd;
+}
+
+.tab-button.active {
+    background-color: #ccc;
+}
+
+.tab-content {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.tab-content {
+    padding: 20px;
+}
+
+.tab-content h2 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.tab-content p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.cta-button {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 18px;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+}
+
+.cta-button:hover {
+    background-color: #0056b3;
+}
+
+/* Ensure the home tab is visible by default */
+#home {
+    display: block;
+}
+

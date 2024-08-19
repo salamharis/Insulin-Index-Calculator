@@ -3,12 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Insulin Index Calculator</title>
+    <title>Nutrition iAUC Calculator</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.20/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -20,54 +16,55 @@
                     <img src="images/UTM_Logo.png" alt="UTM Logo" class="logo">
                 </div>
             </div>
-            <h1>Insulin Index Calculator</h1>
+            <h1>Nutrition iAUC Calculator</h1>
         </header>
+
         <nav class="tabs">
+            <button class="tab-button" onclick="window.location.href='http://insulinindexresearch.com'">Home</button>
             <button class="tab-button active" onclick="openTab(event, 'calculate')">Calculate</button>
             <button class="tab-button" onclick="openTab(event, 'about')">About iAUC Calculator</button>
             <button class="tab-button" onclick="openTab(event, 'license')">Licence & Version History</button>
             <button class="tab-button" onclick="openTab(event, 'citing')">Citing the Calculator</button>
         </nav>
+
         <main>
-            <div id="calculate" class="tab-content active">
+            <section id="calculate" class="tab-content active">
                 <div class="calculator">
+                    <!-- Your existing calculator content goes here -->
                     <div class="input-group">
                         <div class="row parameter-selection">
                             <div class="radio-group">
-                                <label>
-                                    <input type="radio" name="parameter" value="glucose" checked> Glucose
-                                </label>
-                                <label>
-                                    <input type="radio" name="parameter" value="insulin"> Insulin
-                                </label>
+                                <label><input type="radio" name="parameter" value="glucose" checked> Glucose</label>
+                                <label><input type="radio" name="parameter" value="insulin"> Insulin</label>
                             </div>
                         </div>
+
                         <div class="row unit-selection">
-                            <div class="radio-group">
-                                <label>
-                                    <input type="radio" name="unit" value="g/dL"> g/dL
-                                </label>
-                                <label>
-                                    <input type="radio" name="unit" value="mg/dL"> mg/dL
-                                </label>
-                                <label>
-                                    <input type="radio" name="unit" value="mmol/L" checked> mmol/L
-                                </label>
+                            <div class="radio-group" id="glucoseUnits">
+                                <label><input type="radio" name="unit" value="g/dL" checked> g/dL</label>
+                                <label><input type="radio" name="unit" value="mg/dL"> mg/dL</label>
+                                <label><input type="radio" name="unit" value="mmol/L"> mmol/L</label>
+                            </div>
+                            <div class="radio-group" id="insulinUnits" style="display: none;">
+                                <label><input type="radio" name="unit" value="μIU/mL" checked> μIU/mL</label>
+                                <label><input type="radio" name="unit" value="pmol/L"> pmol/L</label>
                             </div>
                         </div>
+
                         <div class="row data-input">
                             <label for="timeInput">Time (min):</label>
-                            <input type="number" id="timeInput" placeholder="Enter time">
-                            
+                            <input type="number" id="timeInput" min="0" step="1">
                             <label for="concentrationInput">Concentration:</label>
-                            <input type="number" id="concentrationInput" placeholder="Enter concentration">
+                            <input type="number" id="concentrationInput" min="0" step="0.01">
                             <button onclick="addData()">Add Data</button>
                         </div>
                     </div>
-                    <div class="row" id="data-controls">
-                        <button onclick="clearData()">Clear Data</button>
-                        <button onclick="plotGraph()">Plot Graph</button>
+
+                    <div id="data-controls" class="row">
+                        <button onclick="clearData()" class="clear-data-btn">Clear Data</button>
+                        <button onclick="plotGraph()" class="plot-graph-btn">Plot Graph</button>
                     </div>
+
                     <table id="dataTable" style="display: none;">
                         <thead>
                             <tr>
@@ -76,56 +73,51 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        </tbody>
+                        <tbody></tbody>
                     </table>
+
                     <div class="chart-container">
                         <canvas id="concentrationChart"></canvas>
                     </div>
+
                     <button onclick="calculateAUC()">Calculate AUC for Shaded Area</button>
+
                     <div id="result"></div>
+
                     <button id="savePdfBtn" onclick="saveToPdf()" style="display: none;">Save to PDF</button>
                 </div>
-            </div>
-            <div id="about" class="tab-content">
+            </section>
+
+            <section id="about" class="tab-content">
                 <h2>About iAUC Calculator</h2>
                 <p>Information about the iAUC Calculator goes here.</p>
-            </div>
-            <div id="license" class="tab-content">
+            </section>
+
+            <section id="license" class="tab-content">
                 <h2>Licence & Version History</h2>
                 <p>Licence information and version history goes here.</p>
-            </div>
-            <div id="citing" class="tab-content">
+            </section>
+
+            <section id="citing" class="tab-content">
                 <h2>Citing the Calculator</h2>
                 <p>Information on how to cite this calculator goes here.</p>
-            </div>
+            </section>
         </main>
-        <footer>
-            <div class="developers-team">
-                <h2>Developer Team</h2>
-                <ul>
-                    <li>Bhuwaneswaran Vijayam - Clinical Lecturer, Newcastle University Medicine Malaysia (NUMed)</li>
-                    <li>Muhammad Faiz Md Shakhih - Lecturer, Universiti Teknologi Malaysia</li>
-                    <li>Abdul Salam A Haris - Software Engineer, Universiti Teknologi Malaysia Alumni</li>
-                </ul>
-            </div>
+
+        <footer class="developers-team">
+            <h2>Developer Team</h2>
+            <ul>
+                <li>Bhuwaneswaran Vijayam - Clinical Lecturer, Newcastle University Medicine Malaysia (NUMed)</li>
+                <li>Muhammad Faiz Md Shakhih - Lecturer, Universiti Teknologi Malaysia</li>
+                <li>Abdul Salam A Haris - Software Engineer, Universiti Teknologi Malaysia Alumni</li>
+            </ul>
         </footer>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="script.js"></script>
-    <script>
-        function openTab(evt, tabName) {
-            var i, tabContent, tabButtons;
-            tabContent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabContent.length; i++) {
-                tabContent[i].style.display = "none";
-            }
-            tabButtons = document.getElementsByClassName("tab-button");
-            for (i = 0; i < tabButtons.length; i++) {
-                tabButtons[i].className = tabButtons[i].className.replace(" active", "");
-            }
-            document.getElementById(tabName).style.display = "block";
-            evt.currentTarget.className += " active";
-        }
-    </script>
 </body>
 </html>
