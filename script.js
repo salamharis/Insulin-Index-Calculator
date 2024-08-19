@@ -403,8 +403,7 @@ function openTab(evt, tabName) {
     evt.currentTarget.className += " active";
 }
 
-// Initialize the page
+// Set the home tab as active by default
 document.addEventListener('DOMContentLoaded', function() {
-    // Set the Calculate tab as active by default
-    document.querySelector('.tab-button[onclick="openTab(event, \'calculate\')"]').click();
+    document.querySelector('.tab-button').click();
 });
