@@ -4,6 +4,21 @@ let firstConcentration = null;
 let currentParameter = 'glucose';
 let currentUnit = 'g/dL';
 
+// Add this function at the beginning of your script.js file
+function openTab(evt, tabName) {
+    var i, tabContent, tabButtons;
+    tabContent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabContent.length; i++) {
+        tabContent[i].style.display = "none";
+    }
+    tabButtons = document.getElementsByClassName("tab-button");
+    for (i = 0; i < tabButtons.length; i++) {
+        tabButtons[i].classList.remove("active");
+    }
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.classList.add("active");
+}
+
 function getSelectedParameter() {
     return document.querySelector('input[name="parameter"]:checked').value;
 }
@@ -389,21 +404,18 @@ async function saveToPdf() {
     }
 }
 
-function openTab(evt, tabName) {
-    var i, tabContent, tabButtons;
-    tabContent = document.getElementsByClassName("tab-content");
-    for (i = 0; i < tabContent.length; i++) {
-        tabContent[i].style.display = "none";
-    }
-    tabButtons = document.getElementsByClassName("tab-button");
-    for (i = 0; i < tabButtons.length; i++) {
-        tabButtons[i].className = tabButtons[i].className.replace(" active", "");
-    }
-    document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.className += " active";
-}
-
-// Set the home tab as active by default
+// Add this code at the end of your script.js file
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('.tab-button').click();
+    const tabButtons = document.querySelectorAll('.tab-button[data-tab]');
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            openTab(event, this.getAttribute('data-tab'));
+        });
+    });
+
+    // Ensure the Calculate tab is active by default
+    const calculateTab = document.querySelector('.tab-button[data-tab="calculate"]');
+    if (calculateTab) {
+        calculateTab.click();
+    }
 });
